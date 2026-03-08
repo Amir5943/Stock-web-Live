@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Stock Market Dashboard</title>
 
 <style>
 
 body{
-font-family: Arial;
+font-family:Arial;
 background:#0f172a;
 color:white;
 margin:0;
@@ -15,20 +14,20 @@ margin:0;
 
 header{
 background:#020617;
-text-align:center;
 padding:20px;
+text-align:center;
 font-size:28px;
 }
 
 .market{
 background:#22c55e;
-padding:8px;
 text-align:center;
+padding:8px;
 font-weight:bold;
 }
 
 .container{
-padding:30px;
+padding:40px;
 text-align:center;
 }
 
@@ -37,7 +36,6 @@ width:60%;
 padding:12px;
 border-radius:6px;
 border:none;
-margin-top:10px;
 }
 
 button{
@@ -67,6 +65,7 @@ border-radius:10px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -76,12 +75,12 @@ Stock Market Dashboard
 </header>
 
 <div class="market" id="marketStatus">
-Loading market status...
+Checking Market...
 </div>
 
 <div class="container">
 
-<h2>Search Any Company</h2>
+<h2>Search Company</h2>
 
 <input id="search" placeholder="Type company name (Apple, Tesla, Meta)">
 <br>
@@ -91,23 +90,25 @@ Loading market status...
 <div id="chart"></div>
 
 <div class="news">
+
 <h3>Market News</h3>
+
 <p>Latest financial news will appear here.</p>
+
 </div>
 
 </div>
 
 <script>
 
-// Market open/close check
 function updateMarket(){
 
 let hour = new Date().getHours();
 
 if(hour >= 9 && hour <= 16){
-document.getElementById("marketStatus").innerText = "Market Status: OPEN";
+document.getElementById("marketStatus").innerText="Market Status: OPEN";
 }else{
-document.getElementById("marketStatus").innerText = "Market Status: CLOSED";
+document.getElementById("marketStatus").innerText="Market Status: CLOSED";
 }
 
 }
@@ -115,31 +116,38 @@ document.getElementById("marketStatus").innerText = "Market Status: CLOSED";
 updateMarket();
 
 
-// Search stock by company name
-async function searchStock(){
+function searchStock(){
 
-let company = document.getElementById("search").value;
+let company=document.getElementById("search").value.toLowerCase().trim();
 
-let response = await fetch(
-"https://query1.finance.yahoo.com/v1/finance/search?q=" + company
-);
+let stocks={
 
-let data = await response.json();
+"apple":"AAPL",
+"meta":"META",
+"tesla":"TSLA",
+"microsoft":"MSFT",
+"amazon":"AMZN",
+"google":"GOOGL",
+"nvidia":"NVDA",
+"netflix":"NFLX",
+"amd":"AMD",
+"intel":"INTC"
 
-if(data.quotes.length === 0){
+};
 
-alert("Company not found");
+let ticker=stocks[company];
+
+if(!ticker){
+
+alert("Company not supported yet.");
 
 return;
 
 }
 
-let ticker = data.quotes[0].symbol;
+document.getElementById("chart").innerHTML=
 
-document.getElementById("chart").innerHTML =
-'<iframe src="https://s.tradingview.com/widgetembed/?symbol='
-+ ticker +
-'&interval=D&theme=dark" width="100%" height="500"></iframe>';
+'<iframe src="https://s.tradingview.com/widgetembed/?symbol='+ticker+'&interval=D&theme=dark" width="100%" height="500"></iframe>';
 
 }
 
