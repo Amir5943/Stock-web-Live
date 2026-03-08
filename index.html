@@ -1,166 +1,149 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
+<meta charset="UTF-8">
 <title>Stock Market Dashboard</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
 
+body{
+font-family: Arial;
+background:#0f172a;
+color:white;
+margin:0;
+}
+
+header{
+background:#020617;
+text-align:center;
+padding:20px;
+font-size:28px;
+}
+
+.market{
+background:#22c55e;
+padding:8px;
+text-align:center;
+font-weight:bold;
+}
+
+.container{
+padding:30px;
+text-align:center;
+}
+
+input{
+width:60%;
+padding:12px;
+border-radius:6px;
+border:none;
+margin-top:10px;
+}
+
+button{
+padding:12px 20px;
+margin-top:10px;
+background:#22c55e;
+border:none;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+#chart{
+margin-top:30px;
+}
+
+.news{
+margin-top:40px;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+
+</style>
 </head>
 
 <body>
 
 <header>
-
 Stock Market Dashboard
-
-<div class="clock" id="clock"></div>
-
 </header>
 
-<!-- LOGIN -->
+<div class="market" id="marketStatus">
+Loading market status...
+</div>
 
-<div class="login" id="loginBox">
+<div class="container">
 
-<h2>Login</h2>
+<h2>Search Any Company</h2>
 
-<input id="username" placeholder="Username">
+<input id="search" placeholder="Type company name (Apple, Tesla, Meta)">
 <br>
-
-<input id="password" type="password" placeholder="Password">
-<br><br>
-
-<button onclick="login()">Login</button>
-
-</div>
-
-<!-- DASHBOARD -->
-
-<div class="dashboard" id="dashboard">
-
-<div class="topbar">
-
-<button onclick="logout()">Logout</button>
-
-<div class="status" id="marketStatus">
-Market Status: Checking...
-</div>
-
-</div>
-
-<!-- SEARCH -->
-
-<div class="search">
-
-<input id="searchStock" placeholder="Search stock ticker (example: AAPL)">
 
 <button onclick="searchStock()">Search</button>
 
-</div>
-
-<!-- STOCK GRID -->
-
-<div class="grid"></div>
-
-<!-- NEWS -->
+<div id="chart"></div>
 
 <div class="news">
-
 <h3>Market News</h3>
-
 <p>Latest financial news will appear here.</p>
-
 </div>
 
 </div>
-
-<footer>
-
-Live Stock Viewer • Market Dashboard
-
-</footer>
-
-<script src="script.js"></script>
 
 <script>
 
-function login(){
+// Market open/close check
+function updateMarket(){
 
-let user = document.getElementById("username").value
-let pass = document.getElementById("password").value
-
-if(user === "" || pass === ""){
-alert("No letters or numbers detected")
-return
-}
-
-document.getElementById("loginBox").style.display="none"
-document.getElementById("dashboard").style.display="block"
-
-}
-
-function logout(){
-
-document.getElementById("loginBox").style.display="block"
-document.getElementById("dashboard").style.display="none"
-
-}
-
-function updateClock(){
-
-let now = new Date()
-
-document.getElementById("clock").innerText =
-now.toLocaleTimeString()
-
-}
-
-setInterval(updateClock,1000)
-
-function searchStock(){
-
-let ticker = document.getElementById("searchStock").value.toUpperCase()
-
-if(ticker===""){
-alert("Enter a stock ticker")
-return
-}
-
-alert("Searching for: " + ticker)
-
-}
-
-function marketStatus(){
-
-let hour = new Date().getHours()
+let hour = new Date().getHours();
 
 if(hour >= 9 && hour <= 16){
-
-document.getElementById("marketStatus").innerText =
-"Market Status: OPEN"
-
+document.getElementById("marketStatus").innerText = "Market Status: OPEN";
 }else{
-
-document.getElementById("marketStatus").innerText =
-"Market Status: CLOSED"
-
+document.getElementById("marketStatus").innerText = "Market Status: CLOSED";
 }
 
 }
 
-marketStatus()
+updateMarket();
 
-document.addEventListener("keypress",function(e){
 
-if(e.key==="Enter"){
-login()
+// Search stock by company name
+async function searchStock(){
+
+let company = document.getElementById("search").value;
+
+let response = await fetch(
+"https://query1.finance.yahoo.com/v1/finance/search?q=" + company
+);
+
+let data = await response.json();
+
+if(data.quotes.length === 0){
+
+alert("Company not found");
+
+return;
+
 }
 
-})
+let ticker = data.quotes[0].symbol;
+
+document.getElementById("chart").innerHTML =
+'<iframe src="https://s.tradingview.com/widgetembed/?symbol='
++ ticker +
+'&interval=D&theme=dark" width="100%" height="500"></iframe>';
+
+}
 
 </script>
 
 </body>
-
 </html>
