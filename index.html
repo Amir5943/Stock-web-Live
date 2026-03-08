@@ -4,7 +4,6 @@
 <title>Stock Market Dashboard</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#0f172a;
@@ -23,7 +22,6 @@ font-size:28px;
 background:#22c55e;
 text-align:center;
 padding:8px;
-font-weight:bold;
 }
 
 .container{
@@ -56,14 +54,6 @@ background:#16a34a;
 #chart{
 margin-top:30px;
 }
-
-.news{
-margin-top:40px;
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-}
-
 </style>
 
 </head>
@@ -74,54 +64,30 @@ border-radius:10px;
 Stock Market Dashboard
 </header>
 
-<div class="market" id="marketStatus">
-Checking Market...
+<div class="market">
+Market Status: OPEN
 </div>
 
 <div class="container">
 
 <h2>Search Company</h2>
 
-<input id="search" placeholder="Type company name (Apple, Tesla, Meta)">
+<input id="search" placeholder="Type company name (Apple)">
 <br>
 
-<button onclick="searchStock()">Search</button>
+<button id="searchBtn">Search</button>
 
 <div id="chart"></div>
-
-<div class="news">
-
-<h3>Market News</h3>
-
-<p>Latest financial news will appear here.</p>
-
-</div>
 
 </div>
 
 <script>
 
-function updateMarket(){
-
-let hour = new Date().getHours();
-
-if(hour >= 9 && hour <= 16){
-document.getElementById("marketStatus").innerText="Market Status: OPEN";
-}else{
-document.getElementById("marketStatus").innerText="Market Status: CLOSED";
-}
-
-}
-
-updateMarket();
-
-
-function searchStock(){
+document.getElementById("searchBtn").addEventListener("click", function(){
 
 let company=document.getElementById("search").value.toLowerCase().trim();
 
 let stocks={
-
 "apple":"AAPL",
 "meta":"META",
 "tesla":"TSLA",
@@ -129,27 +95,20 @@ let stocks={
 "amazon":"AMZN",
 "google":"GOOGL",
 "nvidia":"NVDA",
-"netflix":"NFLX",
-"amd":"AMD",
-"intel":"INTC"
-
+"netflix":"NFLX"
 };
 
 let ticker=stocks[company];
 
 if(!ticker){
-
-alert("Company not supported yet.");
-
+alert("Company not supported yet");
 return;
-
 }
 
-document.getElementById("chart").innerHTML=
+document.getElementById("chart").innerHTML =
+'<iframe width="100%" height="500" src="https://s.tradingview.com/widgetembed/?symbol='+ticker+'&interval=D&theme=dark"></iframe>';
 
-'<iframe src="https://s.tradingview.com/widgetembed/?symbol='+ticker+'&interval=D&theme=dark" width="100%" height="500"></iframe>';
-
-}
+});
 
 </script>
 
